@@ -18,18 +18,23 @@ const db = admin.database();
 db.ref("chats").on("child_added", (snapshot) => {
   const sessionId = snapshot.key;
 
-  db.ref(`chats/${sessionId}/messages`)
-    .limitToLast(1)
-    .on("child_added", (msgSnap) => {
-      const msg = msgSnap.val();
+  // ambil nama user
+  db.ref(`chats/${sessionId}/profile/name`).once("value", (nameSnap) => {
+    const name = nameSnap.val() || "User";
 
-      if (msg.sender === "user") {
-        bot.sendMessage(
-          6938723754,
-          `🆕 Chat Masuk\n\nID: ${sessionId}\nPesan: ${msg.text}`
-        );
-      }
-    });
+    db.ref(`chats/${sessionId}/messages`)
+      .limitToLast(1)
+      .on("child_added", (msgSnap) => {
+        const msg = msgSnap.val();
+
+        if (msg.sender === "user") {
+          bot.sendMessage(
+            6938723754,
+            `🆕 Chat Masuk\n\n👤 ${name}\n🆔 ${sessionId}\n💬 ${msg.text}`
+          );
+        }
+      });
+  });
 });
 
 // ===============================

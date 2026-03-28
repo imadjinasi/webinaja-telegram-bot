@@ -45,7 +45,26 @@ bot.on("message", (msg) => {
 
   let sessionId = null;
   let replyText = msg.text;
+  
+bot.onText(/\/price (USR-\w+)/, (msg, match) => {
+  const sessionId = match[1];
 
+  db.ref(`chats/${sessionId}/messages`).push({
+    sender: "admin",
+    text: "Untuk harga mulai dari 99rb ya kak 🙌",
+    timestamp: Date.now()
+  });
+});
+
+bot.onText(/\/fast (USR-\w+)/, (msg, match) => {
+  const sessionId = match[1];
+
+  db.ref(`chats/${sessionId}/messages`).push({
+    sender: "admin",
+    text: "Respon cepat ya kak, kami bantu sekarang 👍",
+    timestamp: Date.now()
+  });
+});
   // ✅ 1. PRIORITAS: REPLY TELEGRAM
   if (msg.reply_to_message) {
     const originalText = msg.reply_to_message.text;
